@@ -1,5 +1,23 @@
 # CLAUDE.md
 
+Follow the repository engineering rules in `AGENTS.md`.
+
+For non-trivial implementation work:
+
+User Story
+→ Acceptance Criteria
+→ Plan
+→ GitHub Sub-Issues
+→ Implementation
+→ Tests
+→ Verification
+→ Pull Request
+
+Do not declare work DONE unless the Definition of Done in `AGENTS.md`
+is satisfied.
+
+Load detailed documentation only when relevant to the current task.
+
 This file provides comprehensive guidance to Claude AI when working with the Evolution API codebase.
 
 ## Project Overview
@@ -14,19 +32,25 @@ Built with **Node.js 20+**, **TypeScript 5+**, and **Express.js**, it provides e
 ## Common Development Commands
 
 ### Build and Run
+
 ```bash
+
 # Development
+
 npm run dev:server    # Run in development with hot reload (tsx watch)
 
 # Production
+
 npm run build        # TypeScript check + tsup build
 npm run start:prod   # Run production build
 
 # Direct execution
+
 npm start           # Run with tsx
 ```
 
 ### Code Quality
+
 ```bash
 npm run lint        # ESLint with auto-fix
 npm run lint:check  # ESLint check only
@@ -34,30 +58,39 @@ npm run commit      # Interactive commit with commitizen
 ```
 
 ### Database Management
+
 ```bash
+
 # Set database provider first
+
 export DATABASE_PROVIDER=postgresql  # or mysql
 
 # Generate Prisma client (automatically uses DATABASE_PROVIDER env)
+
 npm run db:generate
 
 # Deploy migrations (production)
+
 npm run db:deploy      # Unix/Mac
 npm run db:deploy:win  # Windows
 
 # Development migrations (with sync to provider folder)
+
 npm run db:migrate:dev      # Unix/Mac
 npm run db:migrate:dev:win  # Windows
 
 # Open Prisma Studio
+
 npm run db:studio
 
 # Development migrations
+
 npm run db:migrate:dev      # Unix/Mac
 npm run db:migrate:dev:win  # Windows
 ```
 
 ### Testing
+
 ```bash
 npm test    # Run tests with watch mode
 ```
@@ -65,6 +98,7 @@ npm test    # Run tests with watch mode
 ## Architecture Overview
 
 ### Core Structure
+
 - **Multi-tenant SaaS**: Complete instance isolation with per-tenant authentication
 - **Multi-provider database**: PostgreSQL and MySQL via Prisma ORM with provider-specific schemas and migrations
 - **WhatsApp integrations**: Baileys, Meta Business API, and Evolution API with unified interface
@@ -72,6 +106,7 @@ npm test    # Run tests with watch mode
 - **Microservices pattern**: Modular integrations for chatbots, storage, and external services
 
 ### Directory Layout
+
 ```
 src/
 ├── api/
@@ -125,11 +160,13 @@ src/
 - Media file management and URL generation
 
 ### Database Schema Management
+
 - Separate schema files: `postgresql-schema.prisma` and `mysql-schema.prisma`
 - Environment variable `DATABASE_PROVIDER` determines active database
 - Migration folders are provider-specific and auto-selected during deployment
 
 ### Authentication & Security
+
 - **API key-based authentication** via `apikey` header (global or per-instance)
 - **Instance-specific tokens** for WhatsApp connection authentication
 - **Guards system** for route protection and authorization
@@ -140,23 +177,27 @@ src/
 ## Important Implementation Details
 
 ### WhatsApp Instance Management
+
 - Each WhatsApp connection is an "instance" with unique name
 - Instance data stored in database with connection state
 - Session persistence in database or file system (configurable)
 - Automatic reconnection handling with exponential backoff
 
 ### Message Queue Architecture
+
 - Supports RabbitMQ, Amazon SQS, and WebSocket for events
 - Event types: message.received, message.sent, connection.update, etc.
 - Configurable per instance which events to send
 
 ### Media Handling
+
 - Local storage or S3/Minio for media files
 - Automatic media download from WhatsApp
 - Media URL generation for external access
 - Support for audio transcription via OpenAI
 
 ### Multi-tenancy Support
+
 - Instance isolation at database level
 - Separate webhook configurations per instance
 - Independent integration settings per instance
@@ -177,6 +218,7 @@ Critical configurations:
 The project follows comprehensive development standards defined in `.cursor/rules/`:
 
 ### Core Principles
+
 - **Always respond in Portuguese (PT-BR)** for user communication
 - **Follow established architecture patterns** (Service Layer, RouterBroker, etc.)
 - **Robust error handling** with retry logic and graceful degradation
@@ -185,6 +227,7 @@ The project follows comprehensive development standards defined in `.cursor/rule
 - **Performance optimizations** with Redis caching and connection pooling
 
 ### Code Standards
+
 - **TypeScript strict mode** with full type coverage
 - **JSONSchema7** for input validation (not class-validator)
 - **Conventional Commits** enforced by commitlint
@@ -193,6 +236,7 @@ The project follows comprehensive development standards defined in `.cursor/rule
 - **RouterBroker pattern** for route handling with `dataValidate`
 
 ### Architecture Patterns
+
 - **Multi-tenant isolation** at database and instance level
 - **Event-driven communication** with EventEmitter2
 - **Microservices integration** pattern for external services
@@ -209,6 +253,7 @@ Currently, the project has minimal formal testing infrastructure:
 - Run `npm test` for watch mode development testing
 
 ### Recommended Testing Strategy
+
 - Focus on **critical business logic** in services
 - **Mock external dependencies** (WhatsApp APIs, databases)
 - **Integration tests** for API endpoints

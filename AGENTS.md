@@ -1,3 +1,196 @@
+# AGENTS.md
+
+# Engineering Rules
+
+This file defines the mandatory engineering workflow for AI coding agents
+and developers working in this repository.
+
+## 1. Required Workflow
+
+For non-trivial changes:
+
+1. Read the relevant GitHub User Story and Acceptance Criteria.
+2. Read applicable architecture docs and ADRs.
+3. Inspect existing code, tests, and dependencies.
+4. Create or update `plans/<story-id>-plan.md`.
+5. Decompose meaningful implementation work into GitHub Sub-Issues.
+6. Implement the smallest logical increment.
+7. Run applicable tests.
+8. Verify every Acceptance Criterion.
+9. Create or update the Pull Request.
+10. Do not declare DONE until the Definition of Done is satisfied.
+
+Do not begin implementation before understanding the requirement and
+existing implementation.
+
+## 2. GitHub Model
+
+- Milestone = Release / MVP
+- Issue = User Story
+- Sub-Issue = Engineering Task
+- Pull Request = Implementation
+- GitHub Actions = Automated verification
+
+GitHub is the source of truth for execution status.
+Do not maintain duplicate task status in repository files.
+
+## 3. Requirements
+
+- Do not invent business requirements.
+- Acceptance Criteria define required functional behavior.
+- Record assumptions explicitly.
+- Do not silently expand scope.
+- If ambiguity materially affects business behavior, security,
+  authorization, architecture, or cost, stop and request a decision.
+
+## 4. Planning
+
+For non-trivial work create:
+
+`plans/<story-id>-plan.md`
+
+The plan should contain only what is useful for implementation:
+
+- objective
+- proposed approach
+- affected components
+- dependencies
+- implementation tasks
+- Acceptance Criteria mapping
+- test strategy
+- risks/assumptions
+
+Do not duplicate the User Story inside the plan.
+
+Update the plan when implementation materially changes.
+
+## 5. Engineering
+
+Prefer:
+
+- existing components over new components
+- deterministic logic over LLM reasoning
+- small changes over large refactoring
+- configuration over hard-coded values
+- reversible decisions over irreversible ones
+- existing dependencies over unnecessary new dependencies
+
+Do not perform unrelated refactoring.
+
+If significant unrelated technical debt is discovered, create a separate
+issue.
+
+## 6. AI / LLM Usage
+
+Use LLM reasoning where semantic interpretation provides meaningful value.
+
+Prefer deterministic code for:
+
+- authorization
+- calculations
+- exact matching
+- validation
+- filtering
+- schema enforcement
+- explicit business rules
+
+Never rely solely on LLM output for security or authorization decisions.
+
+## 7. Testing
+
+Every Acceptance Criterion must map to:
+
+- an automated test, or
+- documented verification evidence.
+
+Run the smallest relevant test set during implementation and the required
+test suite before completion.
+
+Do not weaken or remove valid tests merely to make implementation pass.
+
+## 8. Security
+
+Never commit or expose:
+
+- passwords
+- API keys
+- access/refresh tokens
+- private keys
+- certificates
+- connection strings
+- production secrets
+
+Never bypass organization-managed security controls.
+
+Only use approved MCP servers, plugins, models, external services, and
+credentials.
+
+## 9. Architecture
+
+Follow:
+
+- `docs/architecture/`
+- `docs/architecture/decisions/`
+
+Create an ADR when a change materially affects:
+
+- architecture
+- security boundaries
+- authentication/authorization
+- persistence
+- major dependencies
+- vendor/platform selection
+- difficult-to-reverse technical decisions
+
+Do not create ADRs for routine implementation choices.
+
+## 10. Definition of Done
+
+A User Story is DONE only when all applicable conditions are satisfied:
+
+- [ ] All Acceptance Criteria pass
+- [ ] Implementation is complete
+- [ ] Required tests pass
+- [ ] Existing regression tests pass
+- [ ] Security requirements are satisfied
+- [ ] CI passes
+- [ ] Documentation is updated where required
+- [ ] ADR updated if architecture changed
+- [ ] Verification evidence exists
+- [ ] Required PR reviews/checks pass
+- [ ] No unresolved blocking defects remain
+
+Never report DONE simply because code was generated or compiles.
+
+## 11. Completion
+
+When finishing work, report:
+
+- Story
+- Tasks completed
+- Acceptance Criteria: PASS / FAIL
+- Tests: PASS / FAIL
+- Assumptions
+- Remaining issues
+- Status: READY FOR REVIEW / BLOCKED
+
+Only report DONE when the Definition of Done is satisfied.
+
+## 12. Detailed Documentation
+
+Load additional documentation only when relevant:
+
+- `docs/engineering/DEFINITION-OF-DONE.md`
+- `docs/engineering/TESTING.md`
+- `docs/engineering/SECURITY.md`
+- `docs/architecture/`
+- `docs/architecture/decisions/`
+- `plans/<story-id>-plan.md`
+
+Do not load unrelated documentation into context unnecessarily.
+
+# Repository-Specific Directives & Architecture
+
 # Evolution API - AI Agent Guidelines
 
 This document provides comprehensive guidelines for AI agents (Claude, GPT, Cursor, etc.) working with the Evolution API codebase.
@@ -9,6 +202,7 @@ This document provides comprehensive guidelines for AI agents (Claude, GPT, Curs
 ## Project Structure & Module Organization
 
 ### Core Directories
+
 - **`src/`** – TypeScript source code with modular architecture
   - `api/controllers/` – HTTP route handlers (thin layer)
   - `api/services/` – Business logic (core functionality)
@@ -32,6 +226,7 @@ This document provides comprehensive guidelines for AI agents (Claude, GPT, Curs
 - **`cache/`** – Redis and local cache implementations
 
 ### Build & Deployment
+
 - **`dist/`** – Build output (do not edit directly)
 - **`public/`** – Static assets and media files
 - **`Docker*`**, **`docker-compose*.yaml`** – Containerization and local development stack
@@ -39,60 +234,77 @@ This document provides comprehensive guidelines for AI agents (Claude, GPT, Curs
 ## Build, Test, and Development Commands
 
 ### Development Workflow
+
 ```bash
+
 # Development server with hot reload
+
 npm run dev:server
 
-# Direct execution for testing
-npm start
-
 # Production build and run
+
 npm run build
 npm run start:prod
 ```
 
 ### Code Quality
+
 ```bash
+
 # Linting and formatting
+
 npm run lint        # ESLint with auto-fix
 npm run lint:check  # ESLint check only
 
 # Commit with conventional commits
+
 npm run commit      # Interactive commit with Commitizen
 ```
 
 ### Database Management
+
 ```bash
+
 # Set database provider first (CRITICAL)
+
 export DATABASE_PROVIDER=postgresql  # or mysql
 
 # Generate Prisma client
+
 npm run db:generate
 
 # Development migrations (with provider sync)
+
 npm run db:migrate:dev      # Unix/Mac
 npm run db:migrate:dev:win  # Windows
 
 # Production deployment
+
 npm run db:deploy      # Unix/Mac
 npm run db:deploy:win  # Windows
 
 # Database tools
+
 npm run db:studio      # Open Prisma Studio
 ```
 
 ### Docker Development
+
 ```bash
+
 # Start local services (Redis, PostgreSQL, etc.)
+
 docker-compose up -d
 
 # Full development stack
+
 docker-compose -f docker-compose.dev.yaml up -d
 ```
 
 ## Coding Standards & Architecture Patterns
 
 ### Code Style (Enforced by ESLint + Prettier)
+
 - **TypeScript strict mode** with full type coverage
 - **2-space indentation**, single quotes, trailing commas
 - **120-character line limit**
@@ -107,6 +319,7 @@ docker-compose -f docker-compose.dev.yaml up -d
 ### Architecture Patterns
 
 #### Service Layer Pattern
+
 ```typescript
 export class ExampleService {
   constructor(private readonly waMonitor: WAMonitoringService) {}
@@ -131,6 +344,7 @@ export class ExampleService {
 ```
 
 #### Controller Pattern (Thin Layer)
+
 ```typescript
 export class ExampleController {
   constructor(private readonly exampleService: ExampleService) {}
@@ -142,6 +356,7 @@ export class ExampleController {
 ```
 
 #### RouterBroker Pattern
+
 ```typescript
 export class ExampleRouter extends RouterBroker {
   constructor(...guards: any[]) {
@@ -160,6 +375,7 @@ export class ExampleRouter extends RouterBroker {
 ```
 
 #### DTO Pattern (Simple Classes)
+
 ```typescript
 // CORRECT - Evolution API pattern (no decorators)
 export class ExampleDto {
@@ -176,6 +392,7 @@ export class BadExampleDto {
 ```
 
 #### Validation Pattern (JSONSchema7)
+
 ```typescript
 import { JSONSchema7 } from 'json-schema';
 import { v4 } from 'uuid';
@@ -195,12 +412,14 @@ export const exampleSchema: JSONSchema7 = {
 ## Multi-Tenant Architecture
 
 ### Instance Isolation
+
 - **CRITICAL**: All operations must be scoped by `instanceName` or `instanceId`
 - **Database queries**: Always include `where: { instanceId: ... }`
 - **Authentication**: Validate instance ownership before operations
 - **Data isolation**: Complete separation between tenant instances
 
 ### WhatsApp Instance Management
+
 ```typescript
 // Access instance via WAMonitoringService
 const waInstance = this.waMonitor.waInstances[instance.instanceName];
@@ -212,12 +431,14 @@ if (!waInstance) {
 ## Database Patterns
 
 ### Multi-Provider Support
+
 - **PostgreSQL**: Uses `@db.Integer`, `@db.JsonB`, `@default(now())`
 - **MySQL**: Uses `@db.Int`, `@db.Json`, `@default(now())`
 - **Environment**: Set `DATABASE_PROVIDER=postgresql` or `mysql`
 - **Migrations**: Provider-specific folders auto-selected
 
 ### Prisma Repository Pattern
+
 ```typescript
 // Always use PrismaRepository for database operations
 const result = await this.prismaRepository.instance.findUnique({
@@ -228,18 +449,21 @@ const result = await this.prismaRepository.instance.findUnique({
 ## Integration Patterns
 
 ### Channel Integration (WhatsApp Providers)
+
 - **Baileys**: WhatsApp Web with QR code authentication
 - **Business API**: Official Meta WhatsApp Business API  
 - **Evolution API**: Custom WhatsApp integration
 - **Pattern**: Extend base channel service classes
 
 ### Chatbot Integration
+
 - **Base classes**: Extend `BaseChatbotService` and `BaseChatbotController`
 - **Trigger system**: Support keyword, regex, and advanced triggers
 - **Session management**: Handle conversation state per user
 - **Available integrations**: EvolutionBot, OpenAI, Dify, Typebot, Chatwoot, Flowise, N8N, EvoAI
 
 ### Event Integration
+
 - **Internal events**: EventEmitter2 for application events
 - **External events**: WebSocket, RabbitMQ, SQS, NATS, Pusher
 - **Webhook delivery**: Reliable delivery with retry logic
@@ -247,11 +471,13 @@ const result = await this.prismaRepository.instance.findUnique({
 ## Testing Guidelines
 
 ### Current State
+
 - **No formal test suite** currently implemented
 - **Manual testing** is the primary approach
 - **Integration testing** in development environment
 
 ### Testing Strategy
+
 ```typescript
 // Place tests in test/ directory as *.test.ts
 // Run: npm test (watches test/all.test.ts)
@@ -266,6 +492,7 @@ describe('ExampleService', () => {
 ```
 
 ### Recommended Approach
+
 - Focus on **critical business logic** in services
 - **Mock external dependencies** (WhatsApp APIs, databases)
 - **Integration tests** for API endpoints
@@ -274,40 +501,28 @@ describe('ExampleService', () => {
 ## Commit & Pull Request Guidelines
 
 ### Conventional Commits (Enforced by commitlint)
+
 ```bash
+
 # Use interactive commit tool
+
 npm run commit
 
 # Commit format: type(scope): subject (max 100 chars)
-# Types: feat, fix, docs, style, refactor, perf, test, chore, ci, build, revert, security
-```
 
-### Examples
-- `feat(api): add WhatsApp message status endpoint`
-- `fix(baileys): resolve connection timeout issue`
-- `docs(readme): update installation instructions`
-- `refactor(service): extract common message validation logic`
-
-### Pull Request Requirements
-- **Clear description** of changes and motivation
-- **Linked issues** if applicable
-- **Migration impact** (specify database provider)
-- **Local testing steps** with screenshots/logs
-- **Breaking changes** clearly documented
-
-## Security & Configuration
-
-### Environment Setup
-```bash
 # Copy example environment file
+
 cp .env.example .env
 
 # NEVER commit secrets to version control
+
 # Set DATABASE_PROVIDER before database commands
+
 export DATABASE_PROVIDER=postgresql  # or mysql
 ```
 
 ### Security Best Practices
+
 - **API key authentication** via `apikey` header
 - **Input validation** with JSONSchema7
 - **Rate limiting** on all endpoints
@@ -316,18 +531,21 @@ export DATABASE_PROVIDER=postgresql  # or mysql
 - **Secure defaults** for all configurations
 
 ### Vulnerability Reporting
+
 - See `SECURITY.md` for security vulnerability reporting process
 - Contact: `contato@evolution-api.com`
 
 ## Communication Standards
 
 ### Language Requirements
+
 - **User communication**: Always respond in Portuguese (PT-BR)
 - **Code/comments**: English for technical documentation
 - **API responses**: English for consistency
 - **Error messages**: Portuguese for user-facing errors
 
 ### Documentation Standards
+
 - **Inline comments**: Document complex business logic
 - **API documentation**: Document all public endpoints
 - **Integration guides**: Document new integration patterns
@@ -336,20 +554,22 @@ export DATABASE_PROVIDER=postgresql  # or mysql
 ## Performance & Scalability
 
 ### Caching Strategy
+
 - **Redis primary**: Distributed caching for production
 - **Node-cache fallback**: Local caching when Redis unavailable
 - **TTL strategy**: Appropriate cache expiration per data type
 - **Cache invalidation**: Proper invalidation on data changes
 
 ### Connection Management
+
 - **Database**: Prisma connection pooling
 - **WhatsApp**: One connection per instance with lifecycle management
 - **Redis**: Connection pooling and retry logic
 - **External APIs**: Rate limiting and retry with exponential backoff
 
 ### Monitoring & Observability
+
 - **Structured logging**: Pino logger with correlation IDs
 - **Error tracking**: Comprehensive error scenarios
 - **Health checks**: Instance status and connection monitoring
 - **Telemetry**: Usage analytics (non-sensitive data only)
-
